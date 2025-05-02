@@ -47,7 +47,7 @@ async def on_ready():
     new_height = None
     while True:
         driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-        time.sleep(5)
+        time.sleep(3)
         new_height = driver.execute_script('return document.body.scrollHeight')
 
         if new_height == old_height:
@@ -62,13 +62,12 @@ async def on_ready():
     for image_source in soup.find_all("img"):
         images.append(image_source["src"])
 
-    print(images)
     print(len(images))
-    print("Ready")
 
 @bot.command("getcard")
 async def get_card(ctx, *card_wanted):
     card_wanted = '-'.join(card_wanted)
+    card_wanted = card_wanted.replace(',', '').lower()
     img_url = [string for string in images if card_wanted in string]
     await ctx.send(img_url[1])
 
