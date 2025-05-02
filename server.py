@@ -25,6 +25,8 @@ intents.message_content = True
 #Key symbol to identify command start and sets bot permissions
 bot = commands.Bot(command_prefix='!', intents = intents)
 
+images = []
+
 @bot.event
 async def on_ready():
     """
@@ -56,17 +58,13 @@ async def on_ready():
     driver.quit()
 
     soup = BeautifulSoup(web_html, "html.parser")
-    images = []
-    images = soup.find_all("img")
-    img_url = images[20]["src"]
-    print(images[20]["src"])
-
-    img_data = requests.get(img_url).content
-    with open("image.jpg", "wb") as f:
-        f.write(img_data)
+    for image_source in soup.find_all("img"):
+        images.append(image_source["src"])
 
 @bot.command("getcard")
 async def get_card(ctx, card_wanted):
-    pass
+    card_wanted = card_wanted.replace(' ', '-')
+    img_url = [string for string in images if card_wanted in string]
+    print(img_url)
 
 bot.run(TOKEN)
